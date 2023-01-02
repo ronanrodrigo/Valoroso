@@ -3,51 +3,37 @@ import {
     SafeAreaView,
     ScrollView,
     StatusBar,
-    useColorScheme,
+    useColorScheme
 } from 'react-native'
-import MakerChooserView, { Maker } from './src/maker/MakerChooserView'
+import MakerChooserView, { makers } from './src/maker/MakerChooserView'
 import VehicleTypeChooserView, {
-    VehicleType,
+    vehicleTypes
 } from './src/vehicle-type/VehicleTypeChooserView'
 
 const App = () => {
     const isDarkMode = useColorScheme() === 'dark'
-    const vehicleTypes: VehicleType[] = [
-        { id: 'car', title: 'Carro', icon: '🚘' },
-        { id: 'motor_bike', title: 'Moto', icon: '🏍️' },
-        { id: 'truck', title: 'Caminhão', icon: '🚛' },
-    ]
-    const brands: Maker[] = [
-        { id: 'honda', title: 'Honda', iconName: 'honda' },
-        { id: 'acura', title: 'Acura', iconName: 'acura' },
-        { id: 'lexus', title: 'Lexus', iconName: 'lexus' },
-        { id: 'toyota', title: 'Toyota', iconName: 'toyota' },
-    ]
     const [selectedVehicleType, setVehiclyType] = useState(vehicleTypes[0])
-    const [selectedBrand, setBrand] = useState(brands[0])
-
+    const [selectedMaker, setMaker] = useState(makers[0])
     const backgroundStyle = {
-        backgroundColor: isDarkMode ? 'black' : 'white',
+        backgroundColor: isDarkMode ? 'black' : '#f6f6f6',
     }
 
     return (
-        <SafeAreaView style={{ ...backgroundStyle, margin: 20 }}>
+        <SafeAreaView style={{ ...backgroundStyle, flex: 1 }}>
             <StatusBar
                 barStyle={isDarkMode ? 'light-content' : 'dark-content'}
                 backgroundColor={backgroundStyle.backgroundColor}
             />
             <ScrollView
                 contentInsetAdjustmentBehavior='automatic'
-                style={backgroundStyle}>
+                style={{ padding: 18 }}>
                 <VehicleTypeChooserView
-                    types={vehicleTypes}
                     selectedType={selectedVehicleType}
-                    onSelected={setVehiclyType}
+                    onSelect={setVehiclyType}
                 />
                 <MakerChooserView
-                    brands={brands}
-                    selectedBrand={selectedBrand}
-                    onSelected={setBrand}
+                    selectedMaker={selectedMaker}
+                    onSelect={setMaker}
                 />
             </ScrollView>
         </SafeAreaView>

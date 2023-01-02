@@ -1,33 +1,38 @@
 import React from 'react'
-import { View } from 'react-native'
-import VehicleTypeChooserItemView from './VehicleTypeChooserItemView'
+import HorizontalList, { Identifiable } from '../design/HorizontalList'
+import RoundedSquareListItem, {
+    RoundedSquareListItemProps,
+} from '../design/RoundedSquareListItem'
+import Section from '../design/Section'
 
-export type VehicleType = {
-    id: 'car' | 'truck' | 'motor_bike'
-    title: string
-    icon: string
-}
+export type VehicleType = Identifiable & RoundedSquareListItemProps
 
 type VehicleTypeChooserProps = {
-    types: VehicleType[]
     selectedType: VehicleType
-    onSelected: (selectedType: VehicleType) => void
+    onSelect: (selectedType: VehicleType) => void
 }
 
+export const vehicleTypes: VehicleType[] = [
+    { id: 'car', title: 'Carro', icon: '🚘'},
+    { id: 'motor_bike', title: 'Moto', icon: '🏍️'},
+    { id: 'truck', title: 'Caminhão', icon: '🚛'},
+]
+
 const VehicleTypeChooserView = ({
-    types,
     selectedType,
-    onSelected,
+    onSelect,
 }: VehicleTypeChooserProps) => (
-    <View style={{ flexDirection: 'row' }}>
-        {types
-            .map((v) => ({
-                type: v,
-                selected: v.id === selectedType.id,
-                onSelected: onSelected,
-            }))
-            .map(VehicleTypeChooserItemView)}
-    </View>
+    <Section title='Tipo de veículo'>
+        <HorizontalList items={vehicleTypes}>
+            {(i) =>
+                RoundedSquareListItem({
+                    item: i,
+                    onSelect: onSelect,
+                    isSelected: selectedType.id === i.id,
+                })
+            }
+        </HorizontalList>
+    </Section>
 )
 
 export default VehicleTypeChooserView
