@@ -1,38 +1,52 @@
-import React from 'react'
-import HorizontalList, { Identifiable } from '../design/HorizontalList'
-import RoundedSquareListItem, {
-    RoundedSquareListItemProps,
-} from '../design/RoundedSquareListItem'
+import React, { useEffect, useState } from 'react'
+import { Text } from 'react-native'
+import HorizontalList from '../design/HorizontalList'
+import RoundedSquareListItem from '../design/RoundedSquareListItem'
 import Section from '../design/Section'
-
-export type VehicleType = Identifiable & RoundedSquareListItemProps
+import VehicleTypeViewModel from './entities/VehicleTypeViewModel'
+import makeGetAllVehicleTypePresenter from './presenters/GetAllVehicleTypePresenterFactory'
+import makeGetAllVehicleTypesUsecase from './usecases/GetAllVehicleTypesUsecaseFactory'
 
 type VehicleTypeChooserProps = {
-    selectedType: VehicleType
-    onSelect: (selectedType: VehicleType) => void
+    selectedType?: VehicleTypeViewModel
+    onSelect: (selectedType: VehicleTypeViewModel) => void
 }
 
-export const vehicleTypes: VehicleType[] = [
-    { id: 'car', title: 'Carro', icon: '🚘'},
-    { id: 'motor_bike', title: 'Moto', icon: '🏍️'},
-    { id: 'truck', title: 'Caminhão', icon: '🚛'},
-]
+const VehicleTypeChooserView = ({ selectedType, onSelect }: VehicleTypeChooserProps) => {
+    const [vehicleTypes, setVehicleTypes] = useState<VehicleTypeViewModel[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
-const VehicleTypeChooserView = ({
-    selectedType,
-    onSelect,
-}: VehicleTypeChooserProps) => (
-    <Section title='Tipo de veículo'>
-        <HorizontalList items={vehicleTypes}>
-            {(i) =>
-                RoundedSquareListItem({
-                    item: i,
-                    onSelect: onSelect,
-                    isSelected: selectedType.id === i.id,
+    useEffect(() => {
+        const fetchAll = async () => {
+            await makeGetAllVehicleTypesUsecase()
+                .all()
+                .then(makeGetAllVehicleTypePresenter().transform)
+                .then((v) => {
+                    setVehicleTypes(v)
+                    setIsLoading(false)
+                    onSelect(v[0])
                 })
-            }
-        </HorizontalList>
-    </Section>
-)
+        }
+        void fetchAll()
+    }, [])
+
+    const loadedView = () => (
+        <Section title='Tipo de veículo'>
+            <HorizontalList items={vehicleTypes}>
+                {(i) =>
+                    RoundedSquareListItem({
+                        item: i,
+                        onSelect: onSelect,
+                        isSelected: selectedType?.id === i.id,
+                    })
+                }
+            </HorizontalList>
+        </Section>
+    )
+
+    const loadingView = () => <Text>Loading</Text>
+
+    return isLoading ? loadingView() : loadedView()
+}
 
 export default VehicleTypeChooserView
