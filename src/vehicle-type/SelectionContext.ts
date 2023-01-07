@@ -1,11 +1,15 @@
-import { createContext } from 'react'
+import create from 'zustand'
 
-export type SelectionContextProps = {
-    selectedId: number | undefined
-    setSelectedId: (id: number) => void
+export type UserSelectionStoreProps = {
+    selectedVehicleId: number | undefined
+    setSelectedVehicleId: (id: number) => void
+    selectedMakerId: number | undefined
+    setSelectedMakerId: (id: number) => void
 }
 
-export const SelectionContext = createContext<SelectionContextProps>({
-    selectedId: undefined,
-    setSelectedId: (_) => _,
-})
+export const UserSelectionStore = create<UserSelectionStoreProps>((set) => ({
+    selectedVehicleId: 1,
+    setSelectedVehicleId: (id) => set((state) => ({ selectedVehicleId: id })),
+    selectedMakerId: undefined,
+    setSelectedMakerId: (id) => set((state) => ({ selectedMakerId: id })),
+}))

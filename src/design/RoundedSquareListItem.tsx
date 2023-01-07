@@ -10,13 +10,13 @@ export interface RoundedSquareListItemProps {
 
 type Props<T extends Identifiable & RoundedSquareListItemProps> = {
     item: T
+    isSelected: boolean
+    setSelected: (id: number) => void
 }
 
-const RoundedSquareListItem = <T extends Identifiable & RoundedSquareListItemProps>({ item }: Props<T>) => {
-    const { selectedId, setSelectedId } = useContext(SelectionContext)
-    const isSelected = selectedId === item.id
+const RoundedSquareListItem = <T extends Identifiable & RoundedSquareListItemProps>({ item, isSelected, setSelected }: Props<T>) => {
     return (
-        <Pressable key={item.id} onPress={() => setSelectedId(item.id)} style={{ marginVertical: 9 }}>
+        <Pressable key={item.id} onPress={() => setSelected(item.id)} style={{ marginVertical: 9 }}>
             <View
                 style={{
                     backgroundColor: '#fff',

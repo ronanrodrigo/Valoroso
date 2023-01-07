@@ -1,10 +1,9 @@
 import React from 'react'
 import { Icon } from '../../assets/brand-icons/BrandIcons'
 import HorizontalList, { Identifiable } from '../design/HorizontalList'
-import RoundedSquareListItem, {
-    RoundedSquareListItemProps,
-} from '../design/RoundedSquareListItem'
+import RoundedSquareListItem, { RoundedSquareListItemProps } from '../design/RoundedSquareListItem'
 import Section from '../design/Section'
+import { UserSelectionStore } from '../vehicle-type/SelectionContext'
 
 type Maker = Identifiable & RoundedSquareListItemProps
 
@@ -31,16 +30,24 @@ export const makers = [
     'Mitsubishi',
 ].map(makeMaker)
 
-const MakerChooserView = () => (
-    <Section title='Marca'>
-        <HorizontalList items={makers}>
-            {(i) =>
-                RoundedSquareListItem({
-                    item: i
-                })
-            }
-        </HorizontalList>
-    </Section>
-)
+const MakerChooserView = () => {
+    const [selectedMakerId, setSelectedMakerId] = UserSelectionStore((state) => [
+        state.selectedMakerId,
+        state.setSelectedMakerId,
+    ])
+    return (
+        <Section title='Marca'>
+            <HorizontalList items={makers}>
+                {(i) =>
+                    RoundedSquareListItem({
+                        item: i,
+                        isSelected: selectedMakerId === i.id,
+                        setSelected: setSelectedMakerId,
+                    })
+                }
+            </HorizontalList>
+        </Section>
+    )
+}
 
 export default MakerChooserView

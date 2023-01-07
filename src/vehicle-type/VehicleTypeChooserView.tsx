@@ -4,6 +4,7 @@ import HorizontalList from '../design/HorizontalList'
 import RoundedSquareListItem from '../design/RoundedSquareListItem'
 import Section from '../design/Section'
 import makeGetAllVehicleTypePresenter from './presenters/GetAllVehicleTypePresenterFactory'
+import { UserSelectionStore } from './SelectionContext'
 import makeGetAllVehicleTypesUsecase from './usecases/GetAllVehicleTypesUsecaseFactory'
 
 const VehicleTypeChooserView = () => {
@@ -12,21 +13,24 @@ const VehicleTypeChooserView = () => {
         makeGetAllVehicleTypePresenter().transform,
         []
     )
-
+    const [selectedVehicleTypeID, setSelectedVehicleId] = UserSelectionStore((state) => [
+        state.selectedVehicleId,
+        state.setSelectedVehicleId,
+    ])
     const loadedView = () => (
         <Section title='Tipo de veículo'>
             <HorizontalList items={vehicleTypes}>
                 {(i) =>
                     RoundedSquareListItem({
                         item: i,
+                        isSelected: selectedVehicleTypeID === i.id,
+                        setSelected: setSelectedVehicleId,
                     })
                 }
             </HorizontalList>
         </Section>
     )
-
     const loadingView = () => <Text>Loading</Text>
-
     return isLoading ? loadingView() : loadedView()
 }
 
