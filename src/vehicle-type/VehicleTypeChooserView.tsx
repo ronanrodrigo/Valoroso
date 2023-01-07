@@ -13,22 +13,7 @@ type VehicleTypeChooserProps = {
 }
 
 const VehicleTypeChooserView = ({ selectedType, onSelect }: VehicleTypeChooserProps) => {
-    const [vehicleTypes, setVehicleTypes] = useState<VehicleTypeViewModel[]>([])
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-
-    useEffect(() => {
-        const fetchAll = async () => {
-            await makeGetAllVehicleTypesUsecase()
-                .all()
-                .then(makeGetAllVehicleTypePresenter().transform)
-                .then((v) => {
-                    setVehicleTypes(v)
-                    setIsLoading(false)
-                    onSelect(v[0])
-                })
-        }
-        void fetchAll()
-    }, [])
+    const [vehicleTypes, isLoading] = useData(makeGetAllVehicleTypesUsecase().all, makeGetAllVehicleTypePresenter().transform, [])
 
     const loadedView = () => (
         <Section title='Tipo de veículo'>
@@ -47,6 +32,28 @@ const VehicleTypeChooserView = ({ selectedType, onSelect }: VehicleTypeChooserPr
     const loadingView = () => <Text>Loading</Text>
 
     return isLoading ? loadingView() : loadedView()
+}
+
+const useData = <T, Output>(fetcher: () => Promise<T>, map: (i: T) => Output, initial: Output): [Output, boolean] => {
+    const [data, setData] = useState(initial)
+    const [isLoading, setIsLoading] = useState(false)
+    useEffect(() => {
+        let ignore = false
+        const fetchAll = async () => {
+            await fetcher()
+                .then(map)
+                .then((v) => {
+                    if (ignore) return
+                    setData(v)
+                    setIsLoading(false)
+                })
+        }
+        void fetchAll()
+        return () => {
+            ignore = true
+        }
+    }, [])
+    return [data, isLoading]
 }
 
 export default VehicleTypeChooserView
