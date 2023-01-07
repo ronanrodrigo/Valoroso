@@ -2,7 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 
 export interface Identifiable {
-    id: string | number
+    id: number
     isSelected?: boolean
 }
 
@@ -11,10 +11,7 @@ type HorizontalListProps<T extends Identifiable> = {
     children: (item: T) => JSX.Element
 }
 
-const HorizontalList = <T extends Identifiable>({
-    items,
-    children,
-}: HorizontalListProps<T>) => (
+const HorizontalList = <T extends Identifiable>({ items, children }: HorizontalListProps<T>) => (
     <View
         style={{
             flexDirection: 'row',

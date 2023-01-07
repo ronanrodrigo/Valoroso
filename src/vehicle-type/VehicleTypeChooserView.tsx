@@ -3,17 +3,15 @@ import { Text } from 'react-native'
 import HorizontalList from '../design/HorizontalList'
 import RoundedSquareListItem from '../design/RoundedSquareListItem'
 import Section from '../design/Section'
-import VehicleTypeViewModel from './entities/VehicleTypeViewModel'
 import makeGetAllVehicleTypePresenter from './presenters/GetAllVehicleTypePresenterFactory'
 import makeGetAllVehicleTypesUsecase from './usecases/GetAllVehicleTypesUsecaseFactory'
 
-type VehicleTypeChooserProps = {
-    selectedType?: VehicleTypeViewModel
-    onSelect: (selectedType: VehicleTypeViewModel) => void
-}
-
-const VehicleTypeChooserView = ({ selectedType, onSelect }: VehicleTypeChooserProps) => {
-    const [vehicleTypes, isLoading] = useData(makeGetAllVehicleTypesUsecase().all, makeGetAllVehicleTypePresenter().transform, [])
+const VehicleTypeChooserView = () => {
+    const [vehicleTypes, isLoading] = useData(
+        makeGetAllVehicleTypesUsecase().all,
+        makeGetAllVehicleTypePresenter().transform,
+        []
+    )
 
     const loadedView = () => (
         <Section title='Tipo de veículo'>
@@ -21,8 +19,6 @@ const VehicleTypeChooserView = ({ selectedType, onSelect }: VehicleTypeChooserPr
                 {(i) =>
                     RoundedSquareListItem({
                         item: i,
-                        onSelect: onSelect,
-                        isSelected: selectedType?.id === i.id,
                     })
                 }
             </HorizontalList>

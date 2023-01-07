@@ -31,19 +31,12 @@ export const makers = [
     'Mitsubishi',
 ].map(makeMaker)
 
-type MakerChooserProps = {
-    selectedMaker: Maker
-    onSelect: (selectedMaker: Maker) => void
-}
-
-const MakerChooserView = ({ selectedMaker, onSelect }: MakerChooserProps) => (
+const MakerChooserView = () => (
     <Section title='Marca'>
         <HorizontalList items={makers}>
             {(i) =>
                 RoundedSquareListItem({
-                    item: i,
-                    onSelect: onSelect,
-                    isSelected: selectedMaker.id === i.id,
+                    item: i
                 })
             }
         </HorizontalList>

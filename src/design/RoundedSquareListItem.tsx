@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Pressable, Text, View } from 'react-native'
+import { SelectionContext } from '../vehicle-type/SelectionContext'
 import { Identifiable } from './HorizontalList'
 
 export interface RoundedSquareListItemProps {
@@ -9,22 +10,13 @@ export interface RoundedSquareListItemProps {
 
 type Props<T extends Identifiable & RoundedSquareListItemProps> = {
     item: T
-    isSelected: boolean
-    onSelect: (selected: T) => void
 }
 
-const RoundedSquareListItem = <
-    T extends Identifiable & RoundedSquareListItemProps
->({
-    item,
-    isSelected,
-    onSelect,
-}: Props<T>) => {
+const RoundedSquareListItem = <T extends Identifiable & RoundedSquareListItemProps>({ item }: Props<T>) => {
+    const { selectedId, setSelectedId } = useContext(SelectionContext)
+    const isSelected = selectedId === item.id
     return (
-        <Pressable
-            key={item.id}
-            onPress={() => onSelect(item)}
-            style={{ marginVertical: 9 }}>
+        <Pressable key={item.id} onPress={() => setSelectedId(item.id)} style={{ marginVertical: 9 }}>
             <View
                 style={{
                     backgroundColor: '#fff',
@@ -45,9 +37,7 @@ const RoundedSquareListItem = <
                     elevation: 0,
                     opacity: isSelected ? 1 : 0.6,
                 }}>
-                <Text style={{ opacity: isSelected ? 1 : 0.6, fontSize: 27 }}>
-                    {item.icon}
-                </Text>
+                <Text style={{ opacity: isSelected ? 1 : 0.6, fontSize: 27 }}>{item.icon}</Text>
             </View>
             <Text
                 style={{
